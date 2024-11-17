@@ -1,0 +1,24 @@
+{
+  "Basic React component": {
+    "prefix": "react.component",
+    "scope": "typescriptreact",
+    "description": "Generate a basic react component structure",
+    "body": [
+      "export function $1() {",
+      " return <$2></$2>",
+      "}"
+    ]
+  },
+  "Styled React component": {
+    "prefix": "react.component.styled",
+    "scope": "typescriptreact",
+    "description": "Generate a styled react component structure",
+    "body": [
+      "import styles from '$1.module.css'",
+      "",
+      "export function $1() {",
+      " return <$2 className={styles.$3}></$2>",
+      "}"
+    ]
+  }
+}
