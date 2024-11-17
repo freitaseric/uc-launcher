@@ -1,0 +1,14 @@
+body {
+  height: 100vh;
+  width: 100vw;
+}
+
+.diurnal-mode {
+  color: black;
+  background-color: aliceblue;
+}
+
+.nocturne-mode {
+  color: mintcream;
+  background-color: #222;
+}
