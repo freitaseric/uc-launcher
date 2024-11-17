@@ -43,6 +43,7 @@
     "*.tsx": "${capture}.ts, ${capture}.module.css, ${capture}.css",
     "tsconfig.json": "tsconfig.*.json",
     "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb",
-    "Cargo.toml": "Cargo.lock"
+    "Cargo.toml": "Cargo.lock",
+    "main.tsx": "globals.css, variables.css"
   }
 }

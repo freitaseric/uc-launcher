@@ -1,12 +1,17 @@
+import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import { ThemeProvider } from './components'
-import './globals.css'
-import './variables.css'
+import { AppMenu } from './components'
 
-export default () => {
+export function App() {
+	const [width, setWidth] = useState(200)
+
 	return (
-		<ThemeProvider defaultTheme="diurnal">
+		<main className="bg-zinc-300 text-zinc-950 flex flex-row ">
+			<AppMenu
+				width={width}
+				setWidth={setWidth}
+			/>
 			<Outlet />
-		</ThemeProvider>
+		</main>
 	)
 }
