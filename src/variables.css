@@ -1,0 +1,10 @@
+@layer base {
+  *.diurnal-mode {
+    --primary-foreground: #fff;
+    --primary-background: #000;
+  }
+  *.nocturne-mode {
+    --primary-foreground: #000;
+    --primary-background: #fff;
+  }
+}
