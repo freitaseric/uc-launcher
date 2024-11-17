@@ -5,7 +5,7 @@
     "description": "Generate a basic react component structure",
     "body": [
       "export function $1() {",
-      " return <$2></$2>",
+      " return <$2>$3</$2>",
       "}"
     ]
   },
@@ -14,10 +14,10 @@
     "scope": "typescriptreact",
     "description": "Generate a styled react component structure",
     "body": [
-      "import styles from '$1.module.css'",
+      "import styles from './$1.module.css'",
       "",
       "export function $1() {",
-      " return <$2 className={styles.$3}></$2>",
+      " return <$2 className={styles.$3}>$4</$2>",
       "}"
     ]
   }
