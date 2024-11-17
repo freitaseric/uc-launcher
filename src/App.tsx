@@ -1,9 +1,12 @@
-import styles from './App.module.css'
+import { Outlet } from 'react-router-dom'
+import { ThemeProvider } from './components'
+import './globals.css'
+import './variables.css'
 
 export default () => {
 	return (
-		<main className={styles.container}>
-			<h1>Hello World from Tauri!</h1>
-		</main>
+		<ThemeProvider defaultTheme="diurnal">
+			<Outlet />
+		</ThemeProvider>
 	)
 }
