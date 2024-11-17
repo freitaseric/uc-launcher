@@ -75,7 +75,7 @@ Dessa forma, tornei possível que eu, meus amigos e qualquer pessoa que usar est
 
 ## Contribuições
 
-Tem **algo interessante** que você gostaria de **compartilhar**? Saiba mais sobre [contribuições](https://github.com/freitaseric/uc-launcher/).
+Tem **algo interessante** que você gostaria de **compartilhar**? Saiba mais sobre [contribuições](./CONTRIBUTING.md).
 
 ## Créditos
 

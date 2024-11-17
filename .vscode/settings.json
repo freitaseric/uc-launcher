@@ -17,7 +17,7 @@
 
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-    "README.md": "README.*.md",
+    "*.md": "${capture}.*.md",
     "*.ts": "${capture}.js",
     "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
     "*.jsx": "${capture}.js",

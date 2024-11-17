@@ -75,7 +75,7 @@ This way, I made it possible for me, my friends, and anyone using this program t
 
 ## Contributing
 
-Got **something interesting** you'd like to **share**? Learn about [contributing](https://github.com/freitaseric/uc-launcher/).
+Got **something interesting** you'd like to **share**? Learn about [contributing](./CONTRIBUTING.md).
 
 ## Credits
 
