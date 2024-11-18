@@ -1,7 +1,7 @@
-export function HomeScreen() {
+export function SettingsScreen() {
 	return (
 		<section className="flex items-center justify-center h-screen w-screen">
-			<h1>Página Inicial</h1>
+			<h1>Configurações</h1>
 		</section>
 	)
 }
