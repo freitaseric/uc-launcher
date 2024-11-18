@@ -16,6 +16,8 @@ const router = createBrowserRouter([
 	},
 ])
 
+// await invoke('start_rpc')
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<React.StrictMode>
 		<RouterProvider router={router} />

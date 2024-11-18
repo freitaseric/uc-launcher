@@ -1,7 +1,10 @@
+use commands::{set_activity, start_rpc};
 use tauri::{
     menu::{MenuBuilder, MenuItemBuilder},
     Manager,
 };
+
+mod commands;
 
 pub fn run() {
     tauri::Builder::default()
@@ -52,8 +55,10 @@ pub fn run() {
                     })
                     .build(app)?;
             }
+
             Ok(())
         })
+        .invoke_handler(tauri::generate_handler![start_rpc, set_activity])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
