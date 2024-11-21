@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "uclauncher",
-  "version": "0.1.0",
-  "identifier": "com.uclauncher.app",
+  "productName": "UCLauncher",
+  "version": "2024.11.17",
+  "identifier": "app.uclauncher.UCLauncher",
   "build": {
     "beforeDevCommand": "bun run dev",
     "devUrl": "http://localhost:1420",

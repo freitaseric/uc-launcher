@@ -1,7 +1,7 @@
 {
   "name": "uclauncher",
   "private": true,
-  "version": "0.1.0",
+  "version": "2024.11.17",
   "type": "module",
   "scripts": {
     "dev": "vite",
