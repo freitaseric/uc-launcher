@@ -490,10 +490,8 @@ checksum = "a21f936df1771bf62b77f047b726c4625ff2e8aa607c01ec06e5a05bd8463401"
 dependencies = [
  "android-tzdata",
  "iana-time-zone",
- "js-sys",
  "num-traits",
  "serde",
- "wasm-bindgen",
  "windows-targets 0.52.6",
 ]
 
@@ -4128,9 +4126,7 @@ checksum = "42ff0bf0c66b8238c6f3b578df37d0b7848e55df8577b3f74f92a69acceeb825"
 name = "uclauncher"
 version = "2024.11.17"
 dependencies = [
- "chrono",
  "declarative-discord-rich-presence",
- "lazy_static",
  "serde",
  "serde_json",
  "tauri",

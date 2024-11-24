@@ -1,1 +1,1 @@
-export * from './useDiscordRichPresence'
+export * from './useDiscordPresence'

@@ -1,13 +1,16 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::sync::Mutex;
+
+use libs::discord::DiscordRichPresenceManager;
 use tauri::{
     menu::{MenuBuilder, MenuItemBuilder},
     Manager,
 };
 
+mod commands;
 mod libs;
-mod structs;
 
 fn main() {
     tauri::Builder::default()
@@ -18,10 +21,14 @@ fn main() {
                 .expect("no main window")
                 .set_focus();
         }))
-        .setup(|app| {
+        .setup(move |app| {
             #[cfg(desktop)]
             {
-                let _ = libs::discord::connect_rich_presence(&app);
+                app.manage(Mutex::new(DiscordRichPresenceManager::new()));
+                let state = app.state::<Mutex<DiscordRichPresenceManager>>();
+                let state = state.lock().unwrap();
+
+                state.enable();
 
                 let _ = app.handle().plugin(tauri_plugin_positioner::init());
                 let show = MenuItemBuilder::new("Mostrar")
@@ -71,8 +78,10 @@ fn main() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            libs::discord::update_activity,
-            libs::discord::clear_activity
+            commands::connect_presence,
+            commands::disconnect_presence,
+            commands::set_presence,
+            commands::clear_presence,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

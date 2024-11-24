@@ -1,26 +1,19 @@
-import { invoke } from '@tauri-apps/api/core'
+import { useEffect } from 'react'
+import { useDiscordPresence } from '../hooks'
 
 export function HomeScreen() {
-	// useEffect(() => {
-	// 	invoke('update_activity', {
-	// 		state: 'Página Inicial',
-	// 		details: 'Navegando...',
-	// 		large_image_key: 'icon',
-	// 		large_image_label: 'UC Launcher',
-	// 	}).catch(console.error)
-	// }, [])
+	const { setPresence, clearPresence } = useDiscordPresence()
 
-	const updateActivity = async () =>
-		await invoke('update_activity', {
+	useEffect(() => {
+		setPresence({
 			details: 'Página Inicial',
-			state: 'Navegando...',
-			largeImageKey: 'icon',
-			largeImageLabel: 'UC Launcher',
-			smallImageKey: 'icon',
-			smallImageLabel: 'UC Launcher',
+			state: 'Navegando numa boa',
+			large_image_key: 'home',
+			large_image_label: 'Página Inicial',
+			buttons_labels: ['Código Fonte'],
+			buttons_urls: ['https://github.com/freitaseric/uc-launcher#readme'],
 		})
-
-	const clearActivity = async () => await invoke('clear_activity')
+	}, [setPresence])
 
 	return (
 		<section className="flex flex-col items-center justify-center gap-4 h-screen w-screen">
@@ -29,14 +22,25 @@ export function HomeScreen() {
 			<div className="flex flex-row justify-center items-center gap-8">
 				<button
 					type="button"
-					onClick={updateActivity}
+					onClick={() =>
+						setPresence({
+							details: 'Página Inicial',
+							state: 'Navegando numa boa',
+							large_image_key: 'home',
+							large_image_label: 'Página Inicial',
+							buttons_labels: ['Código Fonte'],
+							buttons_urls: [
+								'https://github.com/freitaseric/uc-launcher#readme',
+							],
+						})
+					}
 					className="px-4 py-2 bg-indigo-700 rounded transition-all hover:bg-opacity-90 hover:scale-110"
 				>
 					Atualizar Atividade
 				</button>
 				<button
 					type="button"
-					onClick={clearActivity}
+					onClick={clearPresence}
 					className="px-4 py-2 bg-indigo-700 rounded transition-all hover:bg-opacity-90 hover:scale-110"
 				>
 					Limpar Atividade

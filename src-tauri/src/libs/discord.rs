@@ -1,117 +1,99 @@
-use std::sync::Mutex;
+use std::error::Error;
 
-use chrono::Utc;
 use declarative_discord_rich_presence::{
-    activity::{Activity, Assets, Timestamps},
+    activity::{Activity, Assets, Button, Timestamps},
     DeclarativeDiscordIpcClient,
 };
-use lazy_static::lazy_static;
-use tauri::{App, AppHandle, Emitter};
+use serde::Serialize;
 
-use crate::structs::discord::DiscordRichPresence;
+const CLIENT_ID: &str = "1307868749176504483";
 
-lazy_static! {
-    static ref DRPC_CLIENT: Mutex<Option<DeclarativeDiscordIpcClient>> = Mutex::new(Some(
-        DeclarativeDiscordIpcClient::new("1307868749176504483")
-    ));
+#[derive(Serialize)]
+pub struct Presence {
+    pub details: Option<String>,
+    pub state: Option<String>,
+    pub large_image_key: Option<String>,
+    pub large_image_label: Option<String>,
+    pub small_image_key: Option<String>,
+    pub small_image_label: Option<String>,
+    pub buttons_labels: Option<Vec<String>>,
+    pub buttons_urls: Option<Vec<String>>,
+    pub timestamp_start: i64,
+    pub timestamp_end: Option<i64>,
 }
 
-pub fn connect_rich_presence(app: &App) -> Result<(), String> {
-    let mut drpc = DRPC_CLIENT.lock().unwrap();
+pub struct DiscordRichPresenceManager {
+    client: DeclarativeDiscordIpcClient,
+}
 
-    if let Some(ref mut client) = *drpc {
-        client.enable();
-
-        client
-            .set_activity(
-                Activity::new()
-                    .details("Iniciando")
-                    .state("O launcher está iniciando..."),
-            )
-            .expect("DiscordRichPresenceError: Unable to set the activity");
-
-        let mut discord_rich_presence = DiscordRichPresence::new();
-
-        discord_rich_presence
-            .with_details("Iniciando".to_string())
-            .with_state("O launcher está iniciando...".to_string());
-
-        let _ = app
-            .emit::<Option<DiscordRichPresence>>("current_activity", Some(discord_rich_presence));
-
-        Ok(())
-    } else {
-        Err("DiscordRichPresenceError: Discord client is uninitialized".to_string())
+impl DiscordRichPresenceManager {
+    pub fn new() -> DiscordRichPresenceManager {
+        DiscordRichPresenceManager {
+            client: DeclarativeDiscordIpcClient::new(CLIENT_ID),
+        }
     }
-}
 
-#[tauri::command]
-pub fn update_activity(
-    app: AppHandle,
-    details: Option<String>,
-    state: Option<String>,
-    large_image_key: Option<String>,
-    large_image_label: Option<String>,
-    small_image_key: Option<String>,
-    small_image_label: Option<String>,
-) -> Result<(), String> {
-    let timestamp_start = Utc::now().timestamp_millis();
-
-    let mut drpc = DRPC_CLIENT.lock().unwrap();
-
-    if let Some(ref mut client) = *drpc {
-        client
-            .set_activity(
-                Activity::new()
-                    .details(details.clone().unwrap_or_default().as_ref())
-                    .state(state.clone().unwrap_or_default().as_ref())
-                    .assets(
-                        Assets::new()
-                            .large_image(large_image_key.clone().unwrap_or_default().as_ref())
-                            .large_text(large_image_label.clone().unwrap_or_default().as_ref())
-                            .small_image(small_image_key.clone().unwrap_or_default().as_ref())
-                            .small_text(small_image_label.clone().unwrap_or_default().as_ref()),
-                    )
-                    .timestamps(Timestamps::new().start(timestamp_start.clone())),
-            )
-            .expect("DiscordRichPresenceError: Unable to set the activity");
-
-        let mut discord_rich_presence = DiscordRichPresence::new();
-
-        discord_rich_presence.apply(
-            details,
-            state,
-            large_image_key,
-            large_image_label,
-            small_image_key,
-            small_image_label,
-            vec![],
-            timestamp_start,
-            None,
-        );
-
-        let _ = app
-            .emit::<Option<DiscordRichPresence>>("current_activity", Some(discord_rich_presence));
-
-        Ok(())
-    } else {
-        Err("DiscordRichPresenceError: Discord client is uninitialized".to_string())
+    pub fn enable(&self) {
+        self.client.enable();
     }
-}
 
-#[tauri::command]
-pub fn clear_activity(app: AppHandle) -> Result<(), String> {
-    let mut drpc = DRPC_CLIENT.lock().unwrap();
+    pub fn disable(&self) {
+        self.client.disable();
+    }
 
-    if let Some(ref mut client) = *drpc {
-        client
-            .clear_activity()
-            .expect("DiscordRichPresenceError: Unable to clear the activity");
+    pub fn set_activity(&self, presence: Presence) -> Result<Presence, Box<dyn Error>> {
+        let mut activity = Activity::new();
+        let mut assets = Assets::new();
+        let mut buttons: Vec<Button> = vec![];
+        let mut timestamps = Timestamps::new().start(presence.timestamp_start);
 
-        let _ = app.emit::<Option<DiscordRichPresence>>("current_activity", None);
+        if let Some(end) = presence.timestamp_end {
+            timestamps = timestamps.end(end);
+        }
 
-        Ok(())
-    } else {
-        Err("DiscordRichPresenceError: Discord client is uninitialized".to_string())
+        if let Some(ref details) = presence.details {
+            activity = activity.details(details);
+        }
+
+        if let Some(ref state) = presence.state {
+            activity = activity.state(state);
+        }
+
+        if let Some(ref large_image_key) = presence.large_image_key {
+            assets = assets.large_image(large_image_key);
+            if let Some(ref large_image_label) = presence.large_image_label {
+                assets = assets.large_text(large_image_label);
+            }
+        }
+
+        if let Some(ref small_image_key) = presence.small_image_key {
+            assets = assets.small_image(small_image_key);
+            if let Some(ref small_image_label) = presence.small_image_label {
+                assets = assets.small_text(small_image_label);
+            }
+        }
+
+        if let (Some(ref labels), Some(ref urls)) =
+            (&presence.buttons_labels, &presence.buttons_urls)
+        {
+            for (label, url) in labels.iter().zip(urls.iter()) {
+                buttons.push(Button::new(label.clone(), url.clone()));
+            }
+        }
+
+        activity = activity
+            .assets(assets)
+            .buttons(buttons)
+            .timestamps(timestamps);
+
+        self.client
+            .set_activity(activity)
+            .map_err(|e| e.to_string())?;
+
+        Ok(presence)
+    }
+
+    pub fn clear_presence(&self) -> Result<(), Box<dyn Error>> {
+        self.client.clear_activity()
     }
 }
